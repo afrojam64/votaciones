@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .sidebar {
+            height: 100vh;
+            background: linear-gradient(to bottom, #007bff, #6c757d);
+            color: white;
+            padding: 1rem;
+        }
+        .sidebar a {
+            color: white;
+            text-decoration: none;
+        }
+        .sidebar .nav-link {
+            margin-bottom: 1rem;
+        }
+        .sidebar .btn {
+            background-color: #28a745;
+            border: none;
+        }
+        .sidebar .btn:hover {
+            background-color: #218838;
+        }
+    </style>
+</head>
+<body>
+<div class="sidebar">
+    <h2>Admin Panel</h2>
+    <ul class="nav flex-column">
+        <li class="nav-item">
+            <a class="nav-link" href="/candidates/list">Listar Candidatos</a>
+            <a href="/candidates/register" class="btn btn-primary btn-sm">Agregar Candidato</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="/admin/list">Listar Administradores</a>
+            <a href="/admin/register" class="btn btn-primary btn-sm">Agregar Administrador</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="/voters/list">Listar Votantes</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="/votes/list">Listar Votaciones</a>
+            <a href="/votes/stats" class="btn btn-primary btn-sm">Ver Estadísticas</a>
+        </li>
+    </ul>
+</div>
+</body>
+</html>

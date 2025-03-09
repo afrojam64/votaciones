@@ -5,54 +5,72 @@ import com.exe.votaciones.Entity.Administrador;
 import com.exe.votaciones.Service.AdministradorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@RestController
-@RequestMapping("/api/administradores")
+@Controller
+@RequestMapping("/admin")
 public class AdministradorController {
 
     @Autowired
     private AdministradorService administradorService;
 
-    @GetMapping
-    public List<AdministradorDTO> listarAdministradores() {
-        return administradorService.listarAdministradores()
+    @GetMapping("/list")
+    public String listarAdministradores(Model model) {
+        List<AdministradorDTO> admins = administradorService.listarAdministradores()
                 .stream()
                 .map(admin -> new AdministradorDTO(admin.getIdAdministrador(), admin.getNombreAdmin(), admin.getEmail(), admin.getPassword()))
                 .collect(Collectors.toList());
+        model.addAttribute("admins", admins);
+        return "admin/list";
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<AdministradorDTO> obtenerAdministrador(@PathVariable Integer id) {
-        return administradorService.obtenerAdministradorPorId(id)
-                .map(admin -> ResponseEntity.ok(new AdministradorDTO(admin.getIdAdministrador(), admin.getNombreAdmin(), admin.getEmail(), admin.getPassword())))
-                .orElse(ResponseEntity.notFound().build());
+    public String obtenerAdministrador(@PathVariable Integer id, Model model) {
+        administradorService.obtenerAdministradorPorId(id)
+                .ifPresent(admin -> model.addAttribute("admin", new AdministradorDTO(admin.getIdAdministrador(), admin.getNombreAdmin(), admin.getEmail(), admin.getPassword())));
+        return "admin/register";
     }
 
-    @PostMapping
-    public Administrador guardarAdministrador(@RequestBody AdministradorDTO administradorDTO) {
+    @GetMapping("/register")
+    public String showRegisterForm(Model model) {
+        model.addAttribute("admin", new AdministradorDTO());
+        return "admin/register";
+    }
+
+    @PostMapping("/register")
+    public String guardarAdministrador(@ModelAttribute AdministradorDTO administradorDTO) {
         Administrador administrador = new Administrador();
         administrador.setNombreAdmin(administradorDTO.getNombreAdmin());
         administrador.setEmail(administradorDTO.getEmail());
         administrador.setPassword(administradorDTO.getPassword());
-        return administradorService.guardarAdministrador(administrador);
+        administradorService.guardarAdministrador(administrador);
+        return "redirect:/admin/list";
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Administrador> actualizarAdministrador(@PathVariable Integer id, @RequestBody AdministradorDTO administradorDTO) {
+    @GetMapping("/edit/{id}")
+    public String editarAdministrador(@PathVariable Integer id, Model model) {
+        administradorService.obtenerAdministradorPorId(id)
+                .ifPresent(admin -> model.addAttribute("admin", new AdministradorDTO(admin.getIdAdministrador(), admin.getNombreAdmin(), admin.getEmail(), admin.getPassword())));
+        return "admin/update";
+    }
+
+    @PostMapping("/update/{id}")
+    public String actualizarAdministrador(@PathVariable Integer id, @ModelAttribute AdministradorDTO administradorDTO) {
         Administrador administrador = new Administrador();
         administrador.setNombreAdmin(administradorDTO.getNombreAdmin());
         administrador.setEmail(administradorDTO.getEmail());
         administrador.setPassword(administradorDTO.getPassword());
-        Administrador actualizado = administradorService.actualizarAdministrador(id, administrador);
-        return actualizado != null ? ResponseEntity.ok(actualizado) : ResponseEntity.notFound().build();
+        administradorService.actualizarAdministrador(id, administrador);
+        return "redirect:/admin/list";
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> eliminarAdministrador(@PathVariable Integer id) {
+    @GetMapping("/delete/{id}")
+    public String eliminarAdministrador(@PathVariable Integer id) {
         administradorService.eliminarAdministrador(id);
-        return ResponseEntity.noContent().build();
+        return "redirect:/admin/list";
     }
 }
