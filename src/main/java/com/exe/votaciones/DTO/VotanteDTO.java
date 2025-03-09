@@ -10,12 +10,14 @@ public class VotanteDTO {
     private Integer idVotante;
     private String nombre;
     private String correo;
+    private String password;
     private Boolean haVotado;
 
-    public VotanteDTO(Integer idVotante, String nombre, String correo) {
+    public VotanteDTO(Integer idVotante, String nombre, String password, String correo) {
         this.idVotante = idVotante;
         this.nombre = nombre;
         this.correo = correo;
+        this.password = password;
         this.haVotado = haVotado;
     }
 
@@ -44,6 +46,14 @@ public class VotanteDTO {
 
     public void setCorreo(String correo) {
         this.correo = correo;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public Boolean getHaVotado() {

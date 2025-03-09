@@ -32,7 +32,7 @@ public class VotanteServiceImpl implements VotanteService {
     @Override
     public Votante actualizarVotante(Integer id, Votante votante) {
         if (votanteRepository.existsById(id)) {
-            votante.setId_votante(id);
+            votante.setIdVotante(id);
             return votanteRepository.save(votante);
         }
         return null;

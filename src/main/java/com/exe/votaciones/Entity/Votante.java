@@ -32,11 +32,11 @@ public class Votante {
     public Votante() {
     }
 
-    public int getId_votante() {
+    public int getIdVotante() {
         return idVotante;
     }
 
-    public void setId_votante(int idVotante) {
+    public void setIdVotante(int idVotante) {
         this.idVotante = idVotante;
     }
 

@@ -20,7 +20,7 @@ public class VotanteController {
     public List<VotanteDTO> listarVotantes() {
         return votanteService.listarVotantes()
                 .stream()
-                .map(v -> new VotanteDTO(v.getId_votante(), v.getNombre_vontante(), v.getCorreo()))
+                .map(v -> new VotanteDTO(v.getIdVotante(), v.getNombre_vontante(), v.getCorreo(), v.getPassword()))
                 .collect(Collectors.toList());
     }
 
@@ -29,6 +29,7 @@ public class VotanteController {
         Votante votante = new Votante();
         votante.setNombre_votante(votanteDTO.getNombre());
         votante.setCorreo(votanteDTO.getCorreo());
+        votante.setPassword(votanteDTO.getPassword());
         return votanteService.guardarVotante(votante);
     }
 }
