@@ -1,13 +1,25 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <style>
         .sidebar {
             height: 100vh;
-            background: linear-gradient(to bottom, #007bff, #6c757d);
+            background-color: #007bff;
             color: white;
             padding: 1rem;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 250px;
+            transition: all 0.3s;
+            border-top-right-radius: 15px;
+            border-bottom-right-radius: 15px;
+        }
+        .sidebar.collapsed {
+            width: 0;
+            padding: 0;
+            overflow: hidden;
         }
         .sidebar a {
             color: white;
@@ -23,28 +35,46 @@
         .sidebar .btn:hover {
             background-color: #218838;
         }
+        #sidebarToggle {
+            position: absolute;
+            top: 10px;
+            right: -30px;
+            background-color: #007bff;
+            border: none;
+            color: white;
+            cursor: pointer;
+            border-radius: 5px;
+        }
     </style>
 </head>
 <body>
-<div class="sidebar">
+<!-- Agregar th:fragment -->
+<div class="sidebar" th:fragment="sidebar">
+    <button id="sidebarToggle">⮜</button>
     <h2>Admin Panel</h2>
     <ul class="nav flex-column">
         <li class="nav-item">
-            <a class="nav-link" href="/candidates/list">Listar Candidatos</a>
-            <a href="/candidates/register" class="btn btn-primary btn-sm">Agregar Candidato</a>
+            <a class="nav-link" href="/candidates/list">Candidatos</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="/admin/list">Listar Administradores</a>
-            <a href="/admin/register" class="btn btn-primary btn-sm">Agregar Administrador</a>
+            <a class="nav-link" href="/admin/list">Administradores</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="/voters/list">Listar Votantes</a>
+            <a class="nav-link" href="/voters/list">Votantes</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="/votes/list">Listar Votaciones</a>
-            <a href="/votes/stats" class="btn btn-primary btn-sm">Ver Estadísticas</a>
+            <a class="nav-link" href="/votes/list">Votaciones</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="/votes/stats">Estadísticas</a>
         </li>
     </ul>
 </div>
+<script>
+    document.getElementById('sidebarToggle').addEventListener('click', function() {
+        document.querySelector('.sidebar').classList.toggle('collapsed');
+        this.textContent = this.textContent === '⮜' ? '⮞' : '⮜';
+    });
+</script>
 </body>
 </html>
