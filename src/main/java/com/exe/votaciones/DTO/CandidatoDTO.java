@@ -11,12 +11,14 @@ public class CandidatoDTO {
     private String nombre;
     private String propuesta;
     private Integer registradoPorId;
+    private String nombreAdmin;
 
-    public CandidatoDTO(Integer idCandidato, String nombre, String propuesta) {
+    public CandidatoDTO(Integer idCandidato, String nombre, String propuesta, Integer registradoPorId, String nombreAdmin) {
         this.idCandidato = idCandidato;
         this.nombre = nombre;
         this.propuesta = propuesta;
         this.registradoPorId = registradoPorId;
+        this.nombreAdmin = nombreAdmin;
     }
 
     public CandidatoDTO(){
@@ -53,5 +55,13 @@ public class CandidatoDTO {
 
     public void setRegistradoPorId(Integer registradoPorId) {
         this.registradoPorId = registradoPorId;
+    }
+
+    public String getNombreAdmin() {
+        return nombreAdmin;
+    }
+
+    public void setNombreAdmin(String nombreAdmin) {
+        this.nombreAdmin = nombreAdmin;
     }
 }

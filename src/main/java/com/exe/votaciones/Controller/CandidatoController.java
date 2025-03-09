@@ -1,5 +1,6 @@
 package com.exe.votaciones.Controller;
 
+import com.exe.votaciones.DTO.AdministradorDTO;
 import com.exe.votaciones.DTO.CandidatoDTO;
 import com.exe.votaciones.Entity.Administrador;
 import com.exe.votaciones.Entity.Candidato;
@@ -27,18 +28,31 @@ public class CandidatoController {
 
     @GetMapping("/list")
     public String listarCandidatos(Model model) {
-        List<CandidatoDTO> candidatos = candidatoService.listarCandidatos()
-                .stream()
-                .map(c -> new CandidatoDTO(c.getIdCandidato(), c.getNombre(), c.getPropuesta()))
-                .collect(Collectors.toList());
-        model.addAttribute("candidates", candidatos);
-        return "candidates/list";
+        try {
+            List<CandidatoDTO> candidatos = candidatoService.listarCandidatos()
+                    .stream()
+                    .map(c -> new CandidatoDTO(
+                            c.getIdCandidato(),
+                            c.getNombre(),
+                            c.getPropuesta(),
+                            c.getRegistradoPor().getIdAdministrador(),
+                            c.getRegistradoPor().getNombreAdmin()))
+                    .collect(Collectors.toList());
+            model.addAttribute("candidates", candidatos);
+            return "candidates/list";
+        } catch (Exception e) {
+            // Add logging here
+            e.printStackTrace();
+            throw e;
+        }
     }
 
     @GetMapping("/register")
     public String mostrarFormularioRegistro(Model model) {
         CandidatoDTO candidato = new CandidatoDTO();
+        List<AdministradorDTO> administradores = administradorService.listarAdministradoresActivos();
         model.addAttribute("candidate", candidato);
+        model.addAttribute("administradores", administradores);
         return "candidates/register";
     }
 
@@ -75,7 +89,13 @@ public class CandidatoController {
             throw new IllegalArgumentException("Candidato no encontrado");
         }
         Candidato candidato = candidatoOptional.get();
-        CandidatoDTO candidatoDTO = new CandidatoDTO(candidato.getIdCandidato(), candidato.getNombre(), candidato.getPropuesta());
+        CandidatoDTO candidatoDTO = new CandidatoDTO(
+                candidato.getIdCandidato(),
+                candidato.getNombre(),
+                candidato.getPropuesta(),
+                candidato.getRegistradoPor().getIdAdministrador(),
+                candidato.getRegistradoPor().getNombreAdmin()  // Añadir el nombreAdmin
+        );
         model.addAttribute("candidate", candidatoDTO);
         return "candidates/update";
     }
@@ -92,6 +112,12 @@ public class CandidatoController {
         candidato.setPropuesta(candidatoDTO.getPropuesta());
 
         candidatoService.guardarCandidato(candidato);
+        return "redirect:/candidates/list";
+    }
+
+    @GetMapping("/delete/{id}")
+    public String eliminarCandidato(@PathVariable("id") Integer id) {
+        candidatoService.eliminarCandidato(id);
         return "redirect:/candidates/list";
     }
 }
