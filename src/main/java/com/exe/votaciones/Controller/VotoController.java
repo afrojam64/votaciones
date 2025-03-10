@@ -32,7 +32,10 @@ public class VotoController {
 
     @GetMapping("/list")
     public String listarVotos(Model model) {
-        List<Voto> votos = votoService.listarVotos();
+        List<VotoDTO> votos = votoService.listarVotos()
+                .stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
         model.addAttribute("votes", votos);
         return "votes/list";
     }
@@ -76,7 +79,7 @@ public class VotoController {
     public String mostrarVoto(@PathVariable Integer id, Model model) {
         Optional<Voto> votoOpt = votoService.obtenerVotoPorId(id);
         if (votoOpt.isPresent()) {
-            model.addAttribute("vote", votoOpt.get());
+            model.addAttribute("vote", convertToDTO(votoOpt.get()));
             return "votes/view";
         }
         return "redirect:/votes/list";
@@ -87,10 +90,8 @@ public class VotoController {
         Optional<Voto> votoOpt = votoService.obtenerVotoPorId(id);
         if (votoOpt.isPresent()) {
             Voto voto = votoOpt.get();
-            Votante votante = new Votante();
-            votante.setIdVotante(votoDTO.getIdVotante());
-            Candidato candidato = new Candidato();
-            candidato.setIdCandidato(votoDTO.getIdCandidato());
+            Votante votante = votanteService.obtenerVotantePorId(votoDTO.getIdVotante()).orElse(null);
+            Candidato candidato = candidatoService.obtenerCandidatoPorId(votoDTO.getIdCandidato()).orElse(null);
             voto.setVotante(votante);
             voto.setCandidato(candidato);
             votoService.registrarVoto(voto);
@@ -102,5 +103,16 @@ public class VotoController {
     public String eliminarVoto(@PathVariable Integer id) {
         votoService.eliminarVoto(id);
         return "redirect:/votes/list";
+    }
+
+    private VotoDTO convertToDTO(Voto voto) {
+        return new VotoDTO(
+                voto.getIdVoto(),
+                voto.getVotante().getIdVotante(),
+                voto.getVotante().getNombre_votante(),
+                voto.getCandidato().getIdCandidato(),
+                voto.getCandidato().getNombre(),
+                voto.getFechaVoto()
+        );
     }
 }

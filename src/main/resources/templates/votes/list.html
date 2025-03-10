@@ -14,8 +14,8 @@
         <thead>
         <tr>
           <th>ID Voto</th>
-          <th>ID Votante</th>
-          <th>ID Candidato</th>
+          <th>Nombre del Votante</th>
+          <th>Nombre del Candidato</th>
           <th>Fecha del Voto</th>
           <th>Acciones</th>
         </tr>
@@ -23,9 +23,9 @@
         <tbody>
         <tr th:each="vote : ${votes}">
           <td th:text="${vote.idVoto}">1</td>
-          <td th:text="${vote.votante.idVotante}">1</td>
-          <td th:text="${vote.candidato.idCandidato}">1</td>
-          <td th:text="${vote.fechaVoto}">2025-03-09 16:30:45</td>
+          <td th:text="${vote.nombreVotante}">Nombre del Votante</td>
+          <td th:text="${vote.nombreCandidato}">Nombre del Candidato</td>
+          <td th:text="${vote.fechaVoto}">2025-03-09T13:16:22.490255</td>
           <td>
             <a th:href="@{/votes/{id}(id=${vote.idVoto})}" class="btn btn-info">Ver</a>
             <a th:href="@{/votes/delete/{id}(id=${vote.idVoto})}" class="btn btn-danger">Eliminar</a>

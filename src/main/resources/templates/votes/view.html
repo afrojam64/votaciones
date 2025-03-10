@@ -16,16 +16,16 @@
                     <td th:text="${vote.idVoto}">1</td>
                 </tr>
                 <tr>
-                    <th>ID Votante</th>
-                    <td th:text="${vote.votante.idVotante}">1</td>
+                    <th>Nombre del Votante</th>
+                    <td th:text="${vote.nombreVotante}">Nombre del Votante</td>
                 </tr>
                 <tr>
-                    <th>ID Candidato</th>
-                    <td th:text="${vote.candidato.idCandidato}">1</td>
+                    <th>Nombre del Candidato</th>
+                    <td th:text="${vote.nombreCandidato}">Nombre del Candidato</td>
                 </tr>
                 <tr>
                     <th>Fecha del Voto</th>
-                    <td th:text="${vote.fechaVoto}">2025-03-09 16:30:45</td>
+                    <td th:text="${vote.fechaVoto}">2025-03-09T13:16:22.490255</td>
                 </tr>
             </table>
             <a href="/votes/list" class="btn btn-primary">Volver a la Lista</a>
