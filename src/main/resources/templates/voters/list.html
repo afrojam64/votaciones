@@ -10,24 +10,27 @@
         </div>
         <div class="col-md-9 offset-md-3 mt-5">
             <h2>Lista de Votantes</h2>
-            <a href="/voters/register" class="btn btn-primary btn-sm mb-3">Agregar Votante</a>
             <table class="table table-striped table-hover">
                 <thead>
                 <tr>
                     <th>ID</th>
                     <th>Nombre</th>
                     <th>Email</th>
+                    <th>Ha Votado</th>
                     <th>Acciones</th>
                 </tr>
                 </thead>
                 <tbody>
-                <tr th:each="votante : ${voters}">
-                    <td th:text="${votante.idVotante}">1</td>
-                    <td th:text="${votante.nombre}">Nombre</td>
-                    <td th:text="${votante.correo}">Email</td>
+                <tr th:each="voter : ${voters}">
+                    <td th:text="${voter.idVotante}">1</td>
+                    <td th:text="${voter.nombre}">Nombre</td>
+                    <td th:text="${voter.correo}">Email</td>
+                    <td th:text="${voter.haVotado ? 'Sí' : 'No'}">No</td>
                     <td>
-                        <a th:href="@{/voters/update/{id}(id=${votante.idVotante})}" class="btn btn-warning">Editar</a>
-                        <a th:href="@{/voters/delete/{id}(id=${votante.idVotante})}" class="btn btn-danger">Eliminar</a>
+                        <a th:if="!${voter.haVotado}" th:href="@{/votes/cast/{voterId}(voterId=${voter.idVotante})}" class="btn btn-primary">Votar</a>
+                        <span th:if="${voter.haVotado}" class="text-muted">Ya votó</span>
+                        <a th:href="@{/voters/edit/{id}(id=${voter.idVotante})}" class="btn btn-warning">Editar</a>
+                        <a th:href="@{/voters/delete/{id}(id=${voter.idVotante})}" class="btn btn-danger">Eliminar</a>
                     </td>
                 </tr>
                 </tbody>

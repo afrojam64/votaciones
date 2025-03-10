@@ -3,6 +3,7 @@ package com.exe.votaciones.Controller;
 import com.exe.votaciones.DTO.VotanteDTO;
 import com.exe.votaciones.Entity.Votante;
 import com.exe.votaciones.Service.VotanteService;
+import com.exe.votaciones.Service.VotoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -18,6 +19,9 @@ public class VotanteController {
 
     @Autowired
     private VotanteService votanteService;
+
+    @Autowired
+    private VotoService votoService;
 
     @GetMapping("/list")
     public String listarVotantes(Model model) {
@@ -46,12 +50,12 @@ public class VotanteController {
         return "redirect:/voters/list";
     }
 
-    @GetMapping("/update/{id}")
+    @GetMapping("/edit/{id}")
     public String mostrarFormularioEdicion(@PathVariable Integer id, Model model) {
         Optional<Votante> votanteOpt = votanteService.obtenerVotantePorId(id);
         if (votanteOpt.isPresent()) {
             model.addAttribute("voter", convertToDTO(votanteOpt.get()));
-            return "voters/update";
+            return "voters/edit";
         }
         return "redirect:/voters/list";
     }
@@ -77,10 +81,10 @@ public class VotanteController {
     private VotanteDTO convertToDTO(Votante votante) {
         return new VotanteDTO(
                 votante.getIdVotante(),
-                votante.getNombre_votante(),    // Mantenemos el nombre original
+                votante.getNombre_votante(),
                 votante.getCorreo(),
                 null, // No enviamos la contraseña
-                votante.isHa_votado()          // Usamos el getter para boolean
+                votante.isHa_votado() // Usamos el getter para boolean
         );
     }
 }
