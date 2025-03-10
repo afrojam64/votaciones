@@ -13,7 +13,7 @@ public class VotanteDTO {
     private String password;
     private Boolean haVotado;
 
-    public VotanteDTO(Integer idVotante, String nombre, String password, String correo) {
+    public VotanteDTO(Integer idVotante, String nombre, String correo, String password, Boolean haVotado) {
         this.idVotante = idVotante;
         this.nombre = nombre;
         this.correo = correo;

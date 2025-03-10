@@ -40,7 +40,7 @@ public class Votante {
         this.idVotante = idVotante;
     }
 
-    public String getNombre_vontante() {
+    public String getNombre_votante() {
         return nombre_votante;
     }
 

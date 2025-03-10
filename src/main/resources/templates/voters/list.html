@@ -10,7 +10,7 @@
         </div>
         <div class="col-md-9 offset-md-3 mt-5">
             <h2>Lista de Votantes</h2>
-            <a href="/votantes/register" class="btn btn-primary btn-sm mb-3">Agregar Votante</a>
+            <a href="/voters/register" class="btn btn-primary btn-sm mb-3">Agregar Votante</a>
             <table class="table table-striped table-hover">
                 <thead>
                 <tr>
@@ -21,13 +21,13 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr th:each="votante : ${votantes}">
+                <tr th:each="votante : ${voters}">
                     <td th:text="${votante.idVotante}">1</td>
                     <td th:text="${votante.nombre}">Nombre</td>
-                    <td th:text="${votante.email}">Email</td>
+                    <td th:text="${votante.correo}">Email</td>
                     <td>
-                        <a th:href="@{/votantes/edit/{id}(id=${votante.idVotante})}" class="btn btn-warning">Editar</a>
-                        <a th:href="@{/votantes/delete/{id}(id=${votante.idVotante})}" class="btn btn-danger">Eliminar</a>
+                        <a th:href="@{/voters/update/{id}(id=${votante.idVotante})}" class="btn btn-warning">Editar</a>
+                        <a th:href="@{/voters/delete/{id}(id=${votante.idVotante})}" class="btn btn-danger">Eliminar</a>
                     </td>
                 </tr>
                 </tbody>
