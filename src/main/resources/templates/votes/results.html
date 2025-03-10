@@ -1,10 +1,31 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
-</head>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head}"></head>
 <body>
-$END$
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-3">
+            <!-- Incluir el sidebar -->
+            <div th:replace="~{fragments/sidebar :: sidebar}"></div>
+        </div>
+        <div class="col-md-9 offset-md-3 mt-5">
+            <h2>Resultados de la Votación</h2>
+            <table class="table table-striped table-hover">
+                <thead>
+                <tr>
+                    <th>Candidato</th>
+                    <th>Votos</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="result : ${results}">
+                    <td th:text="${result[0]}">Nombre del Candidato</td>
+                    <td th:text="${result[1]}">0</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
 </body>
 </html>

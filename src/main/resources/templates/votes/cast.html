@@ -1,10 +1,30 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
-</head>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head}"></head>
 <body>
-$END$
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-3">
+            <!-- Incluir el sidebar -->
+            <div th:replace="~{fragments/sidebar :: sidebar}"></div>
+        </div>
+        <div class="col-md-9 offset-md-3 mt-5">
+            <h2>Emitir Voto</h2>
+            <form th:action="@{/votes/cast}" method="post">
+                <input type="hidden" name="voterId" th:value="${voterId}"/>
+                <div class="form-group">
+                    <label for="candidateId">Seleccionar Candidato</label>
+                    <select class="form-control" id="candidateId" name="candidateId">
+                        <option th:each="candidate : ${candidates}"
+                                th:value="${candidate.idCandidato}"
+                                th:text="${candidate.nombre}">
+                        </option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary">Votar</button>
+            </form>
+        </div>
+    </div>
+</div>
 </body>
 </html>

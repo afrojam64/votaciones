@@ -4,10 +4,13 @@ import com.exe.votaciones.DTO.VotoDTO;
 import com.exe.votaciones.Entity.Candidato;
 import com.exe.votaciones.Entity.Votante;
 import com.exe.votaciones.Entity.Voto;
+import com.exe.votaciones.Service.CandidatoService;
+import com.exe.votaciones.Service.VotanteService;
 import com.exe.votaciones.Service.VotoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,28 +24,66 @@ public class VotoController {
     @Autowired
     private VotoService votoService;
 
-    @PostMapping
-    public ResponseEntity<String> registrarVoto(@RequestBody VotoDTO votoDTO) {
-        boolean exito = votoService.registrarVoto(votoDTO.getIdVotante(), votoDTO.getIdCandidato());
-        return exito ? ResponseEntity.ok("Voto registrado exitosamente.") : ResponseEntity.badRequest().body("El votante ya ha votado.");
+    @Autowired
+    private CandidatoService candidatoService;
+
+    @Autowired
+    private VotanteService votanteService;
+
+    @GetMapping("/list")
+    public String listarVotos(Model model) {
+        List<Voto> votos = votoService.listarVotos();
+        model.addAttribute("votes", votos);
+        return "votes/list";
     }
 
-    @GetMapping
-    public List<VotoDTO> listarVotos() {
-        return votoService.listarVotos().stream()
-                .map(voto -> new VotoDTO(voto.getIdVoto(), voto.getVotante().getIdVotante(), voto.getCandidato().getIdCandidato(), voto.getFechaVoto()))
-                .collect(Collectors.toList());
+    @GetMapping("/cast/{voterId}")
+    public String mostrarFormularioVotacion(@PathVariable Integer voterId, Model model) {
+        model.addAttribute("candidates", candidatoService.listarCandidatos());
+        model.addAttribute("voterId", voterId);
+        return "votes/cast";
+    }
+
+    @PostMapping("/cast")
+    public String procesarVoto(@RequestParam Integer voterId,
+                               @RequestParam Integer candidateId) {
+        boolean resultado = votoService.registrarVoto(voterId, candidateId);
+        if (resultado) {
+            return "redirect:/votes/success";
+        }
+        return "redirect:/votes/error?message=Ya has emitido tu voto";
+    }
+
+    @GetMapping("/results")
+    public String mostrarResultados(Model model) {
+        List<Object[]> resultados = votoService.contarVotosPorCandidato();
+        model.addAttribute("results", resultados);
+        return "votes/results";
+    }
+
+    @GetMapping("/success")
+    public String mostrarExito() {
+        return "votes/success";
+    }
+
+    @GetMapping("/error")
+    public String mostrarError(@RequestParam String message, Model model) {
+        model.addAttribute("errorMessage", message);
+        return "votes/error";
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<VotoDTO> obtenerVotoPorId(@PathVariable Integer id) {
+    public String mostrarVoto(@PathVariable Integer id, Model model) {
         Optional<Voto> votoOpt = votoService.obtenerVotoPorId(id);
-        return votoOpt.map(voto -> ResponseEntity.ok(new VotoDTO(voto.getIdVoto(), voto.getVotante().getIdVotante(), voto.getCandidato().getIdCandidato(), voto.getFechaVoto())))
-                .orElseGet(() -> ResponseEntity.notFound().build());
+        if (votoOpt.isPresent()) {
+            model.addAttribute("vote", votoOpt.get());
+            return "votes/view";
+        }
+        return "redirect:/votes/list";
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<VotoDTO> actualizarVoto(@PathVariable Integer id, @RequestBody VotoDTO votoDTO) {
+    @PostMapping("/update/{id}")
+    public String actualizarVoto(@PathVariable Integer id, @ModelAttribute VotoDTO votoDTO) {
         Optional<Voto> votoOpt = votoService.obtenerVotoPorId(id);
         if (votoOpt.isPresent()) {
             Voto voto = votoOpt.get();
@@ -52,28 +93,14 @@ public class VotoController {
             candidato.setIdCandidato(votoDTO.getIdCandidato());
             voto.setVotante(votante);
             voto.setCandidato(candidato);
-            voto.setFechaVoto(votoDTO.getFechaVoto());
-            Voto votoActualizado = votoService.registrarVoto(voto);
-            VotoDTO votoActualizadoDTO = new VotoDTO(votoActualizado.getIdVoto(), votoActualizado.getVotante().getIdVotante(), votoActualizado.getCandidato().getIdCandidato(), votoActualizado.getFechaVoto());
-            return ResponseEntity.ok(votoActualizadoDTO);
-        } else {
-            return ResponseEntity.notFound().build();
+            votoService.registrarVoto(voto);
         }
+        return "redirect:/votes/list";
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> eliminarVoto(@PathVariable Integer id) {
-        Optional<Voto> votoOpt = votoService.obtenerVotoPorId(id);
-        if (votoOpt.isPresent()) {
-            votoService.eliminarVoto(id);
-            return ResponseEntity.noContent().build();
-        } else {
-            return ResponseEntity.notFound().build();
-        }
-    }
-
-    @GetMapping("/resultados")
-    public List<Object[]> obtenerResultados() {
-        return votoService.contarVotosPorCandidato();
+    @GetMapping("/delete/{id}")
+    public String eliminarVoto(@PathVariable Integer id) {
+        votoService.eliminarVoto(id);
+        return "redirect:/votes/list";
     }
 }
